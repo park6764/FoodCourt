@@ -3,13 +3,13 @@ package com.example.foodcourt;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-public class UserInfo {
+public class MemberInfo {
     private String name;
     private LocalDate birth;
     private Auth auth;
     private ArrayList<Food> orderFoodList;
 
-    UserInfo(String n, LocalDate b, Auth a, ArrayList<Food> o) {
+    MemberInfo(String n, LocalDate b, Auth a, ArrayList<Food> o) {
         name = n;
         birth = b;
         auth = a;

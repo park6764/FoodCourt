@@ -18,13 +18,13 @@ public class RootController {
     }
 
     @GetMapping("/root/userInfo")
-    public String userInfo(ArrayList<UserInfo> users) {
+    public String userInfo(ArrayList<MemberInfo> users) {
         return users.toString();
     }
 
-    @GetMapping("/root/shopOwner")
-    public String userInfo() {
-        return users.toString();
+    @GetMapping("/root/OwnerInfo")
+    public String OwnerInfo(ArrayList<Owner> owners) {
+        return owners.toString();
     }
     
     @GetMapping("/root/addShop")

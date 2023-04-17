@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class OwnerController {
 
+    // 영업자(owner) - 메뉴, 가격 등록(수정, 삭제) - 결제확인, 결제취소 - 주문내역 list - 매출정보
     final ArrayList<Owner> owners = new ArrayList<>();
 
     @GetMapping("/ownerSignUp")
@@ -20,7 +21,7 @@ public class OwnerController {
             @RequestParam(name = "id") String id,
             @RequestParam(name = "pw") String pw
     ) {
-        var ow = MemberController.findEl(m -> m.getAuth().getId().equals(id), owners);
+        var ow = MemberController.findEl(m -> m.getOwnerAuth().getId().equals(id), owners);
         if (ow.isEmpty()) {
             owners.add(new Owner(name, birth, new Auth(id, pw)));
             return "[ " + name + " ]오너 환영합니다.";
@@ -34,9 +35,9 @@ public class OwnerController {
         @RequestParam(name = "id") String id,
         @RequestParam(name = "pw") String pw
     ) {
-        var ow = MemberController.findEl(e -> e.getAuth().getId().equals(id) && e.getAuth().getPw().equals(pw), owners);
+        var ow = MemberController.findEl(e -> e.getOwnerAuth().getId().equals(id) && e.getOwnerAuth().getPw().equals(pw), owners);
 
-        if(ow.isPresent()) return "[ " + ow.get().getName() + " ]오너 환영합니다.";
+        if(ow.isPresent()) return "[ " + ow.get().getOwnerName() + " ]오너 환영합니다.";
         else return "아이디 또는 비밀호가 다름니다.";
     }
 
@@ -46,9 +47,9 @@ public class OwnerController {
         @RequestParam(name = "birth") @DateTimeFormat(pattern = "yyyy-mm-dd") LocalDate birth,
         @RequestParam(name = "id") String id
     ) {
-        var owInfo = MemberController.findEl(u -> u.getName().equals(name) && u.getBirth().equals(birth), owners);
-        var i = MemberController.findEl(e -> e.getAuth().getId().equals(id), owners);
-        var p = owInfo.get().getAuth().getPw();
+        var owInfo = MemberController.findEl(u -> u.getOwnerName().equals(name) && u.getOwnerBirth().equals(birth), owners);
+        var i = MemberController.findEl(e -> e.getOwnerAuth().getId().equals(id), owners);
+        var p = owInfo.get().getOwnerAuth().getPw();
 
         if(owInfo.isPresent() && i.isPresent()) return name + "오너 의 pw 는 [ " + p + " ] 입니다.";
         else if(owInfo.isPresent() && !i.isPresent()) return "없는 id 입니다."; // 등록되지 않은 id 를 쓰면 에러
@@ -60,10 +61,10 @@ public class OwnerController {
         @RequestParam(name = "name") String name,
         @RequestParam(name = "birth") @DateTimeFormat(pattern = "yyyy-mm-dd") LocalDate birth
     ) {
-        var ownerInfo = MemberController.findEl(u -> u.getName().equals(name) && u.getBirth().equals(birth), owners);
+        var ownerInfo = MemberController.findEl(u -> u.getOwnerName().equals(name) && u.getOwnerBirth().equals(birth), owners);
         
-        var i = ownerInfo.get().getAuth().getId();
-        var p = ownerInfo.get().getAuth().getPw();
+        var i = ownerInfo.get().getOwnerAuth().getId();
+        var p = ownerInfo.get().getOwnerAuth().getPw();
 
         if(ownerInfo.isPresent()) {
              return "[ "+ name + " ]오너 의 id와 pw 는 [ " + i + " : " + p + " ] 입니다.";

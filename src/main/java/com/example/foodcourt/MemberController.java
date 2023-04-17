@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class MemberController {
 
-    final ArrayList<UserInfo> users = new ArrayList<>();
+    final ArrayList<MemberInfo> users = new ArrayList<>();
     final ArrayList<Food> orderFoodList = new ArrayList<>();
     
 
@@ -34,7 +34,7 @@ public class MemberController {
     ) {
         var info = findEl(m -> m.getAuth().getId().equals(id), users);
         if (info.isEmpty()) {
-            users.add(new UserInfo(name, birth, new Auth(id, pw), orderFoodList));
+            users.add(new MemberInfo(name, birth, new Auth(id, pw), orderFoodList));
             return "[ " + name + " ]님 환영합니다.";
         } else {
             return "이미 있는 아이디 입니다.";
@@ -107,7 +107,7 @@ public class MemberController {
 
 /*
 
-영업자(2) - 메뉴, 가격 등록(수정, 삭제) - 결제확인, 결제취소 - 주문내역 list - 매출정보
+
 회원(3) - 회원가입 - 로그인(id 찾기, pw찾기(비번변경), 회원탈퇴) - 음식점 list(음식점 검색) - 메뉴 list(메뉴 검색) - 음식 주문(결제, 주문 취소) - 주문내역 list
 
  */

@@ -13,15 +13,15 @@ public class Owner {
         this.auth = auth;
     }
 
-    public String getName() {
+    public String getOwnerName() {
         return name;
     }
 
-    public LocalDate getBirth() {
+    public LocalDate getOwnerBirth() {
         return birth;
     }
 
-    public Auth getAuth() {
+    public Auth getOwnerAuth() {
         return auth;
     }
 
