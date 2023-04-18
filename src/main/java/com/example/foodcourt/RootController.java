@@ -10,7 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class RootController {
 
     // 관리자(root) - 음식점 등록(수정, 삭제) - 영업자 정보 - 회원 정보
-    final ArrayList<Shop> shops = new ArrayList<>();
+    final static ArrayList<Shop> shops = new ArrayList<>();
+    final ArrayList<Food> menus = new ArrayList<>();
 
     @GetMapping("/root/shopList")
     public String shopList() {
@@ -26,6 +27,11 @@ public class RootController {
     public String OwnerInfo(ArrayList<Owner> owners) {
         return owners.toString();
     }
+
+    @GetMapping("/root/shopList")
+    public String OwnerInfo() {
+        return shops.toString();
+    }
     
     @GetMapping("/root/addShop")
     public String addShop(
@@ -35,7 +41,7 @@ public class RootController {
 
         if(sName.isPresent()) return "이미 등록된 상표입니다.";
         else {
-            shops.add(new Shop(shopName));
+            shops.add(new Shop(shopName, menus));
             return "[ " + shopName + " ]이(가) 등록되었습니다.";
         }
     }
@@ -61,7 +67,7 @@ public class RootController {
 
         if(sName.isPresent()) {
             shops.remove(sName.get());
-            shops.add(new Shop(fromShopName));
+            shops.add(new Shop(fromShopName, menus));
             return "[ " + toShopName + " ]이(가) [ " + fromShopName + " ]으로 변경되었습니다.";
         } else return "없는 상표입니다.";
     }

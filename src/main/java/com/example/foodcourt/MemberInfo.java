@@ -6,13 +6,17 @@ import java.util.ArrayList;
 public class MemberInfo {
     private String name;
     private LocalDate birth;
+    private String addr;
     private Auth auth;
-    private ArrayList<Food> orderFoodList;
+    private int money = 0;
+    private ArrayList<OrderFoodList> orderFoodList;
 
-    MemberInfo(String n, LocalDate b, Auth a, ArrayList<Food> o) {
+    MemberInfo(String n, LocalDate b, String ad, Auth a, int m ,ArrayList<OrderFoodList> o) {
         name = n;
         birth = b;
+        addr = ad;
         auth = a;
+        money = m;
         orderFoodList = o;
     }
 
@@ -24,10 +28,28 @@ public class MemberInfo {
         return birth;
     }
 
+    public String getAddr() {
+        return addr;
+    }
+
     public Auth getAuth() {
         return auth;
     }
-    public ArrayList<Food> getOrderList() {
+
+    public int getMoney() {
+        return money;
+    }
+
+    public int setMoney(int pay) {
+        if(money >= pay) {
+            money -= pay;
+            return money;
+        } else {
+            return money; // 안전장치가 없을까..?
+        }
+    }
+
+    public ArrayList<OrderFoodList> getOrderList() {
         return orderFoodList;
     }
 }

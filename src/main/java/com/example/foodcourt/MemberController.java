@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class MemberController {
 
-    final ArrayList<MemberInfo> users = new ArrayList<>();
-    final ArrayList<Food> orderFoodList = new ArrayList<>();
-    
+    final static ArrayList<MemberInfo> users = new ArrayList<>();
+    final static ArrayList<OrderFoodList> orderFoodList = new ArrayList<>();
+
 
     private final String rootId = "root";
     private final String rootPw = "1234";
@@ -29,12 +29,13 @@ public class MemberController {
     public String signUp(
             @RequestParam(name = "name") String name,
             @RequestParam(name = "birth") @DateTimeFormat(pattern = "yyyy-mm-dd") LocalDate birth,
+            @RequestParam(name = "addr") String addr,
             @RequestParam(name = "id") String id,
             @RequestParam(name = "pw") String pw
     ) {
-        var info = findEl(m -> m.getAuth().getId().equals(id), users);
+        var info = findEl(e -> e.getAuth().getId().equals(id), users);
         if (info.isEmpty()) {
-            users.add(new MemberInfo(name, birth, new Auth(id, pw), orderFoodList));
+            users.add(new MemberInfo(name, birth, addr, new Auth(id, pw), 0, orderFoodList));
             return "[ " + name + " ]님 환영합니다.";
         } else {
             return "이미 있는 아이디 입니다.";
@@ -91,23 +92,76 @@ public class MemberController {
         } else return "[ " + name + "]님은 회원이 아닙니다."; 
     }
 
-    public static <T> Optional<T> findEl(Function<T, Boolean> p, ArrayList<T> ls) {
-        if (ls.isEmpty())
-            return Optional.empty();
-        else {
-            final var l = (ArrayList<T>) ls.clone();
-            var a = l.get(0);
-            if (p.apply(a))
-                return Optional.of(a);
-            else
-                return findEl(p, l);
+    @GetMapping("/login/Withdrawal")
+    public String memberWithdrawal(
+        @RequestParam(name = "id") String id,
+        @RequestParam(name = "pw") String pw
+    ) {
+        var info = findEl(e -> e.getAuth().getId().equals(id), users);
+        var n = info.get().getName();
+        if (info.isPresent()) {
+            users.remove(info.get());
+            return "[ " + n + " ]님은 탈퇴하셨습니다.";
+        } else {
+            return "없는 정보입니다.";
         }
     }
+
+    public static <T> Optional<T> findEl(Function<T, Boolean> p, ArrayList<T> list) {
+        if (list.isEmpty())
+            return Optional.empty();
+        else {
+            final var ls = (ArrayList<T>) list.clone();
+            var a = ls.get(0);
+            ArrayList<T> l = (ArrayList<T>)ls.subList(1, ls.size());
+            if (p.apply(a))
+                return Optional.of(a);
+            else{
+                var l_ = findEl(p, l);
+                return l_;
+            }
+        }
+    }
+
+    // static <T> Optional<T> _findEl(Function<T, Boolean> p, ArrayList<T> list) {
+    //     Optional<T> x = Optional.empty();
+
+    //     for (var a : list) {
+    //         if(p.apply(a)) { x = Optional.of(a); break; }
+    //         else continue;
+    //     }
+    //     return x;
+    // }
+
+    // static <T> Optional<T> findElem(Function<T, Boolean> p, ArrayList<T> list) {
+    //     return head(filter(p, list));
+    // }
+
+    // static <T> Optional<T> head(ArrayList<T> ls) {
+    //     if (ls.isEmpty()) {
+    //         return Optional.empty();
+    //     } else {
+    //         return Optional.of(ls.get(0));
+    //     }
+    // }
+
+    // public static <T> ArrayList<T> filter(Function<T, Boolean> p, ArrayList<T> list) {
+    //     if(list.isEmpty()) return new ArrayList<T>();
+    //     else {
+    //         var n = list.get(0);
+    //         var l = new ArrayList<>(list.subList(1, list.size()));
+            
+    //         var result = filter(p, l);
+    //         if(p.apply(n)) {
+    //             result.add(0, n);
+    //         } return result;
+    //     }
+    // }
 }
 
 /*
 
 
-회원(3) - 회원가입 - 로그인(id 찾기, pw찾기(비번변경), 회원탈퇴) - 음식점 list(음식점 검색) - 메뉴 list(메뉴 검색) - 음식 주문(결제, 주문 취소) - 주문내역 list
+회원(3) - 회원가입 - 로그인(id 찾기, pw찾기(비번변경), 회원탈퇴) 
 
  */

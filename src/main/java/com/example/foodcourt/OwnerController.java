@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class OwnerController {
 
     // 영업자(owner) - 메뉴, 가격 등록(수정, 삭제) - 결제확인, 결제취소 - 주문내역 list - 매출정보
-    final ArrayList<Owner> owners = new ArrayList<>();
+    // 우리 음식점에 가장 인기가 좋은 메뉴 보여주기/
+    final static ArrayList<Owner> owners = new ArrayList<>();
+    final static ArrayList<Food> menus = new ArrayList<>();
 
     @GetMapping("/ownerSignUp")
     public String ownerSignUp(
@@ -23,7 +25,7 @@ public class OwnerController {
     ) {
         var ow = MemberController.findEl(m -> m.getOwnerAuth().getId().equals(id), owners);
         if (ow.isEmpty()) {
-            owners.add(new Owner(name, birth, new Auth(id, pw)));
+            owners.add(new Owner(name, birth, new Auth(id, pw), 0));
             return "[ " + name + " ]오너 환영합니다.";
         } else {
             return "이미 있는 아이디 입니다.";
@@ -39,6 +41,21 @@ public class OwnerController {
 
         if(ow.isPresent()) return "[ " + ow.get().getOwnerName() + " ]오너 환영합니다.";
         else return "아이디 또는 비밀호가 다름니다.";
+    }
+
+    @GetMapping("/ownerLogin/Withdrawal")
+    public String ownerWithdrawal( // 탈퇴
+        @RequestParam(name = "id") String id,
+        @RequestParam(name = "pw") String pw
+    ) {
+        var ow = MemberController.findEl(e -> e.getOwnerAuth().getId().equals(id) && e.getOwnerAuth().getPw().equals(pw), owners);
+        var n = ow.get().getOwnerName();
+        if (ow.isPresent()) {
+            owners.remove(ow.get());
+            return "[ " + n + " ]오너는 탈퇴하셨습니다.";
+        } else {
+            return "없는 정보입니다.";
+        }
     }
 
     @GetMapping("/ownerFindId")
@@ -70,4 +87,14 @@ public class OwnerController {
              return "[ "+ name + " ]오너 의 id와 pw 는 [ " + i + " : " + p + " ] 입니다.";
         } else return "[ " + name + "]님은 오너가 아닙니다."; 
     }
+
+    @GetMapping("/ownerLogin/addFood")
+    public String addFood(
+        @RequestParam(name="shopName") String shopName, // shop은 마스터가 추가해줌.
+        @RequestParam(name="foodName") String foodName,
+        @RequestParam(name="price") String price
+    ) {
+        var findShop = findEl(s -> s.getShopName().equals(shopName), RootController.shops);
+    }
 }
+// 사업자마다 자기 음식점에만 접근이 가능해야 한다.
