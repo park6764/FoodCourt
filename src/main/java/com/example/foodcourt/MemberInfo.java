@@ -20,6 +20,10 @@ public class MemberInfo {
         orderFoodList = o;
     }
 
+    public MemberInfo getMemberInfo() {
+        return ;
+    }
+
     public String getName() {
         return name;
     }

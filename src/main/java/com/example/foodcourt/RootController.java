@@ -11,7 +11,7 @@ public class RootController {
 
     // 관리자(root) - 음식점 등록(수정, 삭제) - 영업자 정보 - 회원 정보
     final static ArrayList<Shop> shops = new ArrayList<>();
-    final ArrayList<Food> menus = new ArrayList<>();
+    final static ArrayList<Food> menus = new ArrayList<>();
 
     @GetMapping("/root/shopList")
     public String shopList() {
@@ -34,7 +34,7 @@ public class RootController {
     }
     
     @GetMapping("/root/addShop")
-    public String addShop(
+    public String addShop( // 오너가 마스터한테 요청하여 브렌드를 등록한다고 가정.
         @RequestParam(name = "shopName") String shopName
     ) {
         var sName = MemberController.findEl(s -> s.getShopName().equals(shopName), shops);

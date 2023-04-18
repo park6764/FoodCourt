@@ -20,12 +20,13 @@ public class OwnerController {
     public String ownerSignUp(
             @RequestParam(name = "name") String name,
             @RequestParam(name = "birth") @DateTimeFormat(pattern = "yyyy-mm-dd") LocalDate birth,
+            @RequestParam(name = "brand") String brand, // 자기가 사용할 상표
             @RequestParam(name = "id") String id,
             @RequestParam(name = "pw") String pw
     ) {
         var ow = MemberController.findEl(m -> m.getOwnerAuth().getId().equals(id), owners);
         if (ow.isEmpty()) {
-            owners.add(new Owner(name, birth, new Auth(id, pw), 0));
+            owners.add(new Owner(name, birth, brand, new Auth(id, pw), 0));
             return "[ " + name + " ]오너 환영합니다.";
         } else {
             return "이미 있는 아이디 입니다.";
@@ -88,13 +89,26 @@ public class OwnerController {
         } else return "[ " + name + "]님은 오너가 아닙니다."; 
     }
 
-    @GetMapping("/ownerLogin/addFood")
+    @GetMapping("/ownerLogin/addFood") // 오너 브렌드에 음식 등록.
     public String addFood(
         @RequestParam(name="shopName") String shopName, // shop은 마스터가 추가해줌.
         @RequestParam(name="foodName") String foodName,
-        @RequestParam(name="price") String price
+        @RequestParam(name="price") int price
     ) {
-        var findShop = findEl(s -> s.getShopName().equals(shopName), RootController.shops);
+        var findShop = MemberController.findEl(s -> s.getShopName().equals(shopName) , RootController.shops);
+        var findFood = MemberController.findEl(f -> f.getFoodName().equals(foodName), RootController.menus);
+
+        if(findShop.isPresent() && !findFood.isPresent()) {
+            menus.add(new Food(foodName, price));
+            return "[ " + foodName + " ](이)가 추가되었습니다.";
+        } else {
+            return "이미 등록된 메뉴입니다.";
+        }
     }
 }
-// 사업자마다 자기 음식점에만 접근이 가능해야 한다.
+
+/*
+주문서
+주문내역
+매출
+ */

@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class OrderController {
+    final static ArrayList<OrderFoodList> orderFoodList = new ArrayList<>();
+
     // shopList and foodList를 한번에 보여주는게 좋을 것 같다.
     @GetMapping("/login/shopList")
     public String shopList() {
@@ -57,18 +59,22 @@ public class OrderController {
 
     @GetMapping("/login/shop/foodList/order") // 주문하기
     public String order(
-        @RequestParam(name="name") String name,
-        @RequestParam(name="addr") String addr,
-        @RequestParam(name="orderMenu") String orderMenu,
-        @RequestParam(name="pay") int pay // 지불금액
+        @RequestParam(name = "name") String name,
+        @RequestParam(name = "addr") String addr,
+        @RequestParam(name = "shopName") String shopName,
+        @RequestParam(name = "orderMenu") String orderMenu,
+        @RequestParam(name = "pay") int pay // 지불금액
     ) {
         var info = MemberController.findEl(m -> m.getName().equals(name) && m.getAddr().equals(addr), MemberController.users);
+        var findShop = MemberController.findEl(s -> s.getShopName().equals(shopName), RootController.shops);
+        var findMenu = MemberController.findEl(m -> m.getFoodName().equals(orderMenu), RootController.menus);
         var haveMoney = info.get().getMoney() ; // 보유금액
-        var shop_ = MemberController.findEl(s -> s.getg, null);
+        var shopOwner = MemberController.findEl(o -> o.getBrand().equals(shopName), OwnerController.owners);
 
-        if(info.isPresent() && haveMoney >= pay) {
+        if(info.isPresent() && findShop.isPresent() && findMenu.isPresent() && haveMoney >= pay) {
             info.get().setMoney(pay); // 돈이 owner에게 가야함.
-
+            shopOwner.get().setProfit(pay);
+            orderFoodList.add(new OrderFoodList(info.get(), orderMenu, pay));
             return "ruf";
         }
     }
