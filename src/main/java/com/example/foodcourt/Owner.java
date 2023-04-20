@@ -1,45 +1,25 @@
 package com.example.foodcourt;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 
+import lombok.*;
 
+@Getter
+@AllArgsConstructor
 public class Owner {
     private String name;
     private LocalDate birth;
-    private String brand;
+    private Shop shop;
     private Auth auth;
     private int profit;
-    
-    public Owner(String name, LocalDate birth, String brand, Auth auth, int p) {
-        this.name = name;
-        this.birth = birth;
-        this.brand = brand;
-        this.auth = auth;
-        p = profit;
-    }
+    private ArrayList<Order> orders; // 비어있으면 안됨. 
 
-    public String getOwnerName() {
-        return name;
-    }
-
-    public LocalDate getOwnerBirth() {
-        return birth;
-    }
-
-    public String getBrand() {
-        return brand;
-    }
-
-    public Auth getOwnerAuth() {
-        return auth;
-    }
-
-    public int getProfit() {
-        return profit;
-    }
-
-    public int setProfit(int pay) {
+    public void addProfit(int pay) {
         profit += pay;
-        return profit;
+    }
+
+    public boolean isOwner(Auth auth) {
+        return this.orders.equals(auth);
     }
 }

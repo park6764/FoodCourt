@@ -1,23 +1,13 @@
 package com.example.foodcourt;
 
 import java.util.ArrayList;
+import lombok.*;
 
+@Getter
+@AllArgsConstructor
 public class Shop {
     private String shopName;
     private ArrayList<Food> menus;
-
-    Shop(String s, ArrayList<Food> m) {
-        shopName = s;
-        menus = m;
-    }
-
-    public String getShopName() {
-        return shopName;
-    }
-
-    public ArrayList<Food> getMenus() {
-        return menus;
-    }
 
     // @Override
     // public String toString (ArrayList<Shop> shops) {

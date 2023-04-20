@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.function.Function;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -12,8 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 // 음식점 list(음식점 검색) - 메뉴 list(메뉴 검색) - 음식 주문(결제, 주문 취소) - 주문내역 list
 
 @RestController
+// @RequestMapping("/gi")
 public class OrderController {
-    final static ArrayList<OrderFoodList> orderFoodList = new ArrayList<>();
 
     // shopList and foodList를 한번에 보여주는게 좋을 것 같다.
     @GetMapping("/login/shopList")
@@ -74,9 +75,10 @@ public class OrderController {
         if(info.isPresent() && findShop.isPresent() && findMenu.isPresent() && haveMoney >= pay) {
             info.get().setMoney(pay); // 돈이 owner에게 가야함.
             shopOwner.get().setProfit(pay);
-            orderFoodList.add(new OrderFoodList(info.get(), orderMenu, pay));
+            Order.add(new Order(info.get(), orderMenu, pay));
             return "ruf";
         }
+        return "Error";
     }
 }
 

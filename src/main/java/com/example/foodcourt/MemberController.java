@@ -13,13 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class MemberController {
 
-    final static ArrayList<MemberInfo> users = new ArrayList<>();
-    final static ArrayList<OrderFoodList> orderFoodList = new ArrayList<>();
-
-
-    private final String rootId = "root";
-    private final String rootPw = "1234";
-
     @GetMapping("/")
     public String main() {
         return "<푸드코드_test>";
@@ -35,7 +28,7 @@ public class MemberController {
     ) {
         var info = findEl(e -> e.getAuth().getId().equals(id), users);
         if (info.isEmpty()) {
-            users.add(new MemberInfo(name, birth, addr, new Auth(id, pw), 0, orderFoodList));
+            users.add(new Member(name, birth, addr, new Auth(id, pw), 0, Order));
             return "[ " + name + " ]님 환영합니다.";
         } else {
             return "이미 있는 아이디 입니다.";
@@ -53,14 +46,7 @@ public class MemberController {
         else return "아이디 또는 비밀호가 다름니다.";
     }
 
-    @GetMapping("/root") 
-    public String root(
-        @RequestParam(name = "id") String id,
-        @RequestParam(name = "pw") String pw
-    ) {
-        if(id.equals(rootId) && pw.equals(rootPw)) return "[ 마스터 ]님 환영합니다.";
-        else return "아이디 또는 비밀호가 다름니다.";
-    }
+    
 
     @GetMapping("/findId")
     public String findId(
@@ -111,7 +97,7 @@ public class MemberController {
         if (list.isEmpty())
             return Optional.empty();
         else {
-            final var ls = (ArrayList<T>) list.clone();
+            final ArrayList<T> ls = new ArrayList<>(list);
             var a = ls.get(0);
             ArrayList<T> l = (ArrayList<T>)ls.subList(1, ls.size());
             if (p.apply(a))

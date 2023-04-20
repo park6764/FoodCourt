@@ -5,18 +5,18 @@ import java.util.ArrayList;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/owner/")
 public class OwnerController {
 
     // 영업자(owner) - 메뉴, 가격 등록(수정, 삭제) - 결제확인, 결제취소 - 주문내역 list - 매출정보
     // 우리 음식점에 가장 인기가 좋은 메뉴 보여주기/
-    final static ArrayList<Owner> owners = new ArrayList<>();
-    final static ArrayList<Food> menus = new ArrayList<>();
 
-    @GetMapping("/ownerSignUp")
+    @GetMapping("/SignUp")
     public String ownerSignUp(
             @RequestParam(name = "name") String name,
             @RequestParam(name = "birth") @DateTimeFormat(pattern = "yyyy-mm-dd") LocalDate birth,
@@ -24,7 +24,7 @@ public class OwnerController {
             @RequestParam(name = "id") String id,
             @RequestParam(name = "pw") String pw
     ) {
-        var ow = MemberController.findEl(m -> m.getOwnerAuth().getId().equals(id), owners);
+        var ow = MemberController.findEl(m -> m. , Storage.getInstance().getOwners());
         if (ow.isEmpty()) {
             owners.add(new Owner(name, birth, brand, new Auth(id, pw), 0));
             return "[ " + name + " ]오너 환영합니다.";
@@ -33,18 +33,18 @@ public class OwnerController {
         }
     }
 
-    @GetMapping("/ownerLogin")
+    @GetMapping("/Login")
     public String ownerLogin(
         @RequestParam(name = "id") String id,
         @RequestParam(name = "pw") String pw
     ) {
-        var ow = MemberController.findEl(e -> e.getOwnerAuth().getId().equals(id) && e.getOwnerAuth().getPw().equals(pw), owners);
+        var ow = Storage.getInstance().getOwners().stream().filter(o -> o.getAuth().equals(new Auth(id, pw))).findFirst();
 
         if(ow.isPresent()) return "[ " + ow.get().getOwnerName() + " ]오너 환영합니다.";
         else return "아이디 또는 비밀호가 다름니다.";
     }
 
-    @GetMapping("/ownerLogin/Withdrawal")
+    @GetMapping("/Withdrawal")
     public String ownerWithdrawal( // 탈퇴
         @RequestParam(name = "id") String id,
         @RequestParam(name = "pw") String pw
@@ -59,7 +59,7 @@ public class OwnerController {
         }
     }
 
-    @GetMapping("/ownerFindId")
+    @GetMapping("/FindId")
     public String ownerFindId(
         @RequestParam(name = "name") String name,
         @RequestParam(name = "birth") @DateTimeFormat(pattern = "yyyy-mm-dd") LocalDate birth,
@@ -89,7 +89,7 @@ public class OwnerController {
         } else return "[ " + name + "]님은 오너가 아닙니다."; 
     }
 
-    @GetMapping("/ownerLogin/addFood") // 오너 브렌드에 음식 등록.
+    @GetMapping("/addFood") // 오너 브렌드에 음식 등록.
     public String addFood(
         @RequestParam(name="shopName") String shopName, // shop은 마스터가 추가해줌.
         @RequestParam(name="foodName") String foodName,
@@ -105,6 +105,20 @@ public class OwnerController {
             return "이미 등록된 메뉴입니다.";
         }
     }
+
+        // @GetMapping("/editShop")
+    // public String editShop(
+    //     @RequestParam(name = "toShopName") String toShopName,
+    //     @RequestParam(name = "fromShopName") String fromShopName
+    // ) {
+    //     var sName = MemberController.findEl(s -> s.getShopName().equals(toShopName), shops);
+
+    //     if(sName.isPresent()) {
+    //         shops.remove(sName.get());
+    //         shops.add(new Shop(fromShopName, menus));
+    //         return "[ " + toShopName + " ]이(가) [ " + fromShopName + " ]으로 변경되었습니다.";
+    //     } else return "없는 상표입니다.";
+    // }
 }
 
 /*
