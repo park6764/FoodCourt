@@ -29,7 +29,7 @@ public class RootController {
 
     @GetMapping("/userInfo")
     public ArrayList<Member> usersInfo() {
-        return Storage.getInstance().getUsers();
+        return Storage.getInstance().getMembers();
     }
 
     @GetMapping("/OwnerInfo")

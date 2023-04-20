@@ -5,9 +5,22 @@ import lombok.*;
 
 @Getter
 @AllArgsConstructor
+@EqualsAndHashCode
 public class Shop {
     private String shopName;
     private ArrayList<Food> menus;
+
+    /*
+     * {
+     *  "shopName": "ABC",
+     *  "menus": [
+     *      {
+     *          "foodName": "Hot Dog",
+     *          "foodPrice": 3000
+     *      }
+     *  ]
+     * }
+     */
 
     // @Override
     // public String toString (ArrayList<Shop> shops) {

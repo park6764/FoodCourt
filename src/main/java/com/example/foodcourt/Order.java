@@ -13,4 +13,8 @@ public class Order { // 주문내역
     private Shop shop;
     private ArrayList<Food> foods; // 비어 있으면 안됨.
     private LocalDate date;
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
 }

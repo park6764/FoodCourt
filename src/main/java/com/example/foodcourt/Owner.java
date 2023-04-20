@@ -18,8 +18,4 @@ public class Owner {
     public void addProfit(int pay) {
         profit += pay;
     }
-
-    public boolean isOwner(Auth auth) {
-        return this.orders.equals(auth);
-    }
 }

@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Optional;
 
+import lombok.*;
+
 @Getter
 @AllArgsConstructor
 public class Member {
@@ -19,7 +21,11 @@ public class Member {
             money -= pay;
             return true;
         } else {
-            return false; // 안전장치가 없을까..?
+            return false; 
         }
+    }
+
+    public void setMoney(int money) {
+        this.money = money;
     }
 }

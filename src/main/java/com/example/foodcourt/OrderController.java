@@ -1,84 +1,66 @@
 package com.example.foodcourt;
 
 import java.lang.module.FindException;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.function.Function;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.HttpClientErrorException.Unauthorized;
 
 
-// 음식점 list(음식점 검색) - 메뉴 list(메뉴 검색) - 음식 주문(결제, 주문 취소) - 주문내역 list
+// member가 로그인 후 주문
+// 음식점 list 와 메뉴 list 를 볼 수 있고, 음식점 또는 메뉴 검색 가능.
 
 @RestController
-// @RequestMapping("/gi")
+@RequestMapping("/login/")
 public class OrderController {
 
     // shopList and foodList를 한번에 보여주는게 좋을 것 같다.
-    @GetMapping("/login/shopList")
-    public String shopList() {
-        return RootController.shops.toString();
+    @GetMapping("/shopList")
+    public ResponseEntity<ArrayList<Shop>> shopList() {
+        if(Storage.getInstance().getLoggedInMember().isEmpty()) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); // 인증 안됨.
+        else return ResponseEntity.ok(new ArrayList<>(Storage.getInstance().getOwners().stream()
+                                     .map(o -> o.getShop()).toList()));
     }
 
-    @GetMapping("/login/shop/foodList") // shop에 들어와서 메뉴보기
-    public String foodList() {
-        return OwnerController.menus.toString();
+    @GetMapping("/shop/foodList") // shop에 들어와서 메뉴보기
+    public Optional<ArrayList<Food>> foodList(@RequestParam String shopName) {
+        return Storage.getInstance().getOwners().stream()
+            .map(o -> o.getShop())
+            .filter(s -> s.getShopName().equals(shopName))
+            .findFirst()
+            .map(s -> s.getMenus());
     }
 
-    @GetMapping("/login/search")
-    public String search(
-        @RequestParam(name = "shopName", required = false) String shopName, 
-        @RequestParam(name = "menu") String menu
-    ) {
-        // 메뉴를 검색하면 모든 식당에서 메뉴 검색
-        // 특정 식당의 메뉴 검색
-        var findShop = MemberController.findEl(s -> s.getShopName().equals(shopName) , RootController.shops); // 특정 가계
-        var menu_ = filter(m -> m.getFoodName().equals(menu), OwnerController.menus); // 모든 가계
-
-        if(findShop.isPresent()) {
-            return findShop.get().getMenus().toString();
-        } else {
-            return menu_.toString();
-        }
-
-    }
-
-    public static <T> ArrayList<T> filter(Function<T, Boolean> p, ArrayList<T> list) {
-        if(list.isEmpty()) return new ArrayList<T>(); // 조건에 맞는 el를 담을 그릇
-        else {
-            T a = list.get(0);
-            ArrayList<T> l = new ArrayList<>(list.subList(1, list.size()));
-            
-            ArrayList<T> result = filter(p, l);
-            if(p.apply(a)) {
-                result.add(0, a);
-            } return result;
-        }
-    }
-
-    @GetMapping("/login/shop/foodList/order") // 주문하기
-    public String order(
-        @RequestParam(name = "name") String name,
-        @RequestParam(name = "addr") String addr,
-        @RequestParam(name = "shopName") String shopName,
-        @RequestParam(name = "orderMenu") String orderMenu,
+    @PostMapping("/shop/foodList/order") // 주문하기
+    @ResponseStatus(HttpStatus.OK)
+    public void order(
+        @RequestBody Order order,
         @RequestParam(name = "pay") int pay // 지불금액
     ) {
-        var info = MemberController.findEl(m -> m.getName().equals(name) && m.getAddr().equals(addr), MemberController.users);
-        var findShop = MemberController.findEl(s -> s.getShopName().equals(shopName), RootController.shops);
-        var findMenu = MemberController.findEl(m -> m.getFoodName().equals(orderMenu), RootController.menus);
-        var haveMoney = info.get().getMoney() ; // 보유금액
-        var shopOwner = MemberController.findEl(o -> o.getBrand().equals(shopName), OwnerController.owners);
+        order.setDate(LocalDate.now());
+        var member = Storage.getInstance().getLoggedInMember();
+        
+        if(member.isPresent()) {
+            if(member.get().getMoney() >= pay) {
+                member.get().getOrders().add(order);
+                final var shop = order.getShop();
+                final var ow = Storage.getInstance().getOwners().stream().filter(o -> o.getShop().equals(shop)).findFirst();
 
-        if(info.isPresent() && findShop.isPresent() && findMenu.isPresent() && haveMoney >= pay) {
-            info.get().setMoney(pay); // 돈이 owner에게 가야함.
-            shopOwner.get().setProfit(pay);
-            Order.add(new Order(info.get(), orderMenu, pay));
-            return "ruf";
+                member.get().pay(pay);
+                ow.ifPresent(o -> { o.getOrders().add(order); o.addProfit(pay); });
+            }
         }
-        return "Error";
     }
 }
 
