@@ -1,4 +1,4 @@
-package com.example.foodcourt;
+package com.example.foodcourt.controllers;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -11,6 +11,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.example.foodcourt.Storage;
+import com.example.foodcourt.models.Auth;
+import com.example.foodcourt.models.Food;
+import com.example.foodcourt.models.Owner;
+import com.example.foodcourt.models.Shop;
 
 @RestController
 @RequestMapping("/owner/")

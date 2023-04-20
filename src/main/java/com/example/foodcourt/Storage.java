@@ -3,6 +3,10 @@ package com.example.foodcourt;
 import java.util.ArrayList;
 import java.util.Optional;
 
+import com.example.foodcourt.models.Auth;
+import com.example.foodcourt.models.Member;
+import com.example.foodcourt.models.Owner;
+
 public class Storage {
     private static Storage storage;
     private final ArrayList<Member> members = new ArrayList<>();

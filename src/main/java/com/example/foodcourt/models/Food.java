@@ -1,4 +1,4 @@
-package com.example.foodcourt;
+package com.example.foodcourt.models;
 
 import lombok.*;
 

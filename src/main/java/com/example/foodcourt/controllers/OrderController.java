@@ -1,4 +1,4 @@
-package com.example.foodcourt;
+package com.example.foodcourt.controllers;
 
 import java.lang.module.FindException;
 import java.time.LocalDate;
@@ -16,6 +16,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException.Unauthorized;
+
+import com.example.foodcourt.Storage;
+import com.example.foodcourt.models.Food;
+import com.example.foodcourt.models.Order;
+import com.example.foodcourt.models.Shop;
 
 
 // member가 로그인 후 주문
