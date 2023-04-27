@@ -11,8 +11,8 @@ public class Storage {
     private static Storage storage;
     private final ArrayList<Member> members = new ArrayList<>();
     private final ArrayList<Owner> owners = new ArrayList<>();
-    private Optional<Owner> loggedInOwner;
-    private Optional<Member> loggedInMember;
+    private Optional<Owner> loggedInOwner = Optional.empty();
+    private Optional<Member> loggedInMember = Optional.empty();
 
 
     private final Auth root = new Auth("root", "1234");

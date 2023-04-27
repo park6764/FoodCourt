@@ -30,14 +30,6 @@ import com.example.foodcourt.models.Shop;
 @RequestMapping("/login/")
 public class OrderController {
 
-    // shopList and foodList를 한번에 보여주는게 좋을 것 같다.
-    @GetMapping("/shopList")
-    public ResponseEntity<ArrayList<Shop>> shopList() {
-        if(Storage.getInstance().getLoggedInMember().isEmpty()) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); // 인증 안됨.
-        else return ResponseEntity.ok(new ArrayList<>(Storage.getInstance().getOwners().stream()
-                                     .map(o -> o.getShop()).toList()));
-    }
-
     @GetMapping("/shop/foodList") // shop에 들어와서 메뉴보기
     public Optional<ArrayList<Food>> foodList(@RequestParam String shopName) {
         return Storage.getInstance().getOwners().stream()

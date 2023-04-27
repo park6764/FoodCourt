@@ -66,12 +66,13 @@ public class MemberController {
         } else return "[ " + name + "]님은 회원이 아닙니다."; 
     }
 
-    @GetMapping("/login/Withdrawal")
+    @GetMapping("/login/withdrawal")
     public String memberWithdrawal() {
         
         var info = Storage.getInstance().getLoggedInMember();
-        var n = info.get().getName();
+        
         if (info.isPresent()) {
+            var n = info.get().getName();
             Storage.getInstance().getMembers().remove(info.get());
             return "[ " + n + " ]님은 탈퇴하셨습니다.";
         } else {

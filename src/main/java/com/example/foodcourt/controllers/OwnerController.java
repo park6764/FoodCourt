@@ -25,7 +25,7 @@ public class OwnerController {
     // 영업자(owner) - 메뉴, 가격 등록(수정, 삭제) - 결제확인, 결제취소 - 주문내역 list - 매출정보
     // 우리 음식점에 가장 인기가 좋은 메뉴 보여주기/
 
-    @PostMapping("/SignUp")
+    @PostMapping("/signUp")
     public String ownerSignUp(
             @RequestParam(name = "name") String name,
             @RequestParam(name = "birth") @DateTimeFormat(pattern = "yyyy-mm-dd") LocalDate birth,
@@ -42,7 +42,7 @@ public class OwnerController {
         }
     }
 
-    @GetMapping("/Login")
+    @GetMapping("/login")
     public String ownerLogin(
         @RequestParam(name = "id") String id,
         @RequestParam(name = "pw") String pw
@@ -56,7 +56,7 @@ public class OwnerController {
         else return "아이디 또는 비밀호가 다름니다.";
     }
 
-    @GetMapping("/Withdrawal")
+    @GetMapping("/withdrawal")
     public String ownerWithdrawal() {
         var ow = Storage.getInstance().getLoggedInOwner();
         
@@ -69,7 +69,7 @@ public class OwnerController {
         }
     }
 
-    @GetMapping("/FindAuth")
+    @GetMapping("/findAuth")
     public ResponseEntity<Auth> ownerFindAuth(
         @RequestParam(name = "name") String name,
         @RequestParam(name = "birth") @DateTimeFormat(pattern = "yyyy-mm-dd") LocalDate birth
@@ -98,14 +98,19 @@ public class OwnerController {
         }
     }
 
-        // @GetMapping("/editShop")
+    // @GetMapping("/editShop")
     // public String editShop(
     //     @RequestParam(name = "toShopName") String toShopName,
     //     @RequestParam(name = "fromShopName") String fromShopName
     // ) {
-    //     var sName = MemberController.findEl(s -> s.getShopName().equals(toShopName), shops);
+    //     var shop = Storage.getInstance().getLoggedInOwner().get().getShop().equals(toShopName);
 
-    //     if(sName.isPresent()) {
+    //     if(shop) {
+    //         Storage.getInstance().getLoggedInOwner().get().getShop();
+    //     }
+
+    //     if(shop) {
+    //         Storage.getInstance().
     //         shops.remove(sName.get());
     //         shops.add(new Shop(fromShopName, menus));
     //         return "[ " + toShopName + " ]이(가) [ " + fromShopName + " ]으로 변경되었습니다.";
